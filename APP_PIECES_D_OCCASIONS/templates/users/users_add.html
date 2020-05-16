@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %} Ajouter un USER{% endblock %}
+{% block body %}
+    <div class="home">
+        <BODY bgcolor="brown">
+        <form method="POST" action="">
+            <div>
+                {% if error %}
+                    <p class=error><strong>Error:</strong> {{ error }}
+                {% endif %}
+            </div>
+            <center>
+                <H1>Clavioter un nouveau USER</H1> <br>
+                Nom genre <input type = "text" name= "user_html" /> <br>
+                <input type = "submit" value="Enregistrer le user">
+            </center>
+        </form>
+        </BODY>
+    </div>
+{% endblock %}

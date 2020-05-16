@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %} Afficher USER {% endblock %}
+{% block body %}
+    <div class="home">
+        
+        <form method="POST" action="">
+
+        <div>
+            {{ msgHtml }}
+        </div>
+        <br>
+        <table border="1" cellpadding="5" cellspacing="5">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Mail</th>
+                    <th>Phone</th>
+                    <th>Adresse</th>
+                    <th>Ville</th>
+                    <th>NPA</th>
+                    <th>Genre</th>
+                    <th>Stuff</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            {% for row in data %}
+                <tr>
+                    <td>{{ row.id_user }}</td>
+                    <td>{{ row.firstname_user }}</td>
+                    <td>{{ row.lastname_user|default("", True) }}</td>
+                    <td>{{ row.mail|default("", True) }}</td>
+                    <td>{{ row.phone|default("", True) }}</td>
+                    <td>{{ row.address|default("", True) }}</td>
+                    <td>{{ row.city|default("", True) }}</td>
+                    <td>{{ row.npa|default("", True) }}</td>
+                    <td>{{ row.gender|default("", True) }}</td>
+                    <td>{{ row.date_user|default("", True) }}</td>
+                    <td> <a href="{{ url_for('users_edit', id_user_edit_html=row.id_user) }}">Edit</a> </td>
+                    <td> <a href="{{ url_for('users_select_delete', id_user_delete_html=row.id_user) }}">Delete</a> </td>
+                    <td> <a href="{{ url_for('users_add') }}">Add</a> </td>
+                </tr>
+            {% endfor %}
+        </table>
+        </form>
+        
+    </div>
+{% endblock %}

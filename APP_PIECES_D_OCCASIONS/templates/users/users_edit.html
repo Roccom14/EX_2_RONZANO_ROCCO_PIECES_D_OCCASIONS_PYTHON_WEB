@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Edit USER{% endblock %}
+{% block body %}
+    <div class="home">
+        <BODY bgcolor="yellow">
+            <form method="POST" action="{{ url_for('users_update') }}">
+                <div>
+
+                </div>
+                <br>
+                <table border="1" cellpadding="5" cellspacing="5">
+                    <thead>
+                        <tr>
+                            <th>ID Genre</th>
+                            <th>Nom genre</th>
+                        </tr>
+                    </thead>
+                    {% for row in data %}
+                        <tr>
+                            <td><input type="hidden" name="id_user_edit_html" value="{{ row.id_user }}"></td>
+                            <td><input type = "text" name = "firstname_user_edit_html" value="{{ row.firstname_user }}"</td>
+                            <td><input type = "text" name = "lastname_user_edit_html" value="{{ row.lastname_user|default("", True) }}"</td>
+                            <td><input type = "text" name = "mail_edit_html" value="{{ row.mail|default("", True) }}"</td>
+                            <td><input type = "text" name = "phone_edit_html" value="{{ row.phone|default("", True) }}"</td>
+                            <td><input type = "text" name = "address_edit_html" value="{{ row.address|default("", True) }}"</td>
+                            <td><input type = "text" name = "city_edit_html" value="{{ row.city|default("", True) }}"</td>
+                            <td><input type = "text" name = "npa_edit_html" value="{{ row.npa|default("", True) }}"</td>
+                            <td><input type = "text" name = "gender_edit_html" value="{{ row.gender|default("", True) }}"</td>
+                            <td><input type = "text" name = "date_user_edit_html" value="{{ row.date_user|default("", True) }}"</td>
+                            <td><button class="btn btn-warning" type="submit">Update</button></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </form>
+        </BODY>
+    </div>
+{% endblock %}
