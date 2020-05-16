@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  localhost
--- Généré le :  Sam 16 Mai 2020 à 18:25
+-- Généré le :  Sam 16 Mai 2020 à 20:38
 -- Version du serveur :  5.7.11
 -- Version de PHP :  5.6.18
 
@@ -21,6 +21,7 @@ USE ronzano_rocco_pieces_d_occasions_info1c_2020;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -134,7 +135,7 @@ INSERT INTO `t_type_payment` (`id_type_payment`, `type_payment`) VALUES
 
 CREATE TABLE `t_user` (
   `id_user` int(11) NOT NULL,
-  `fistname_user` varchar(64) NOT NULL,
+  `firstname_user` varchar(64) NOT NULL,
   `lastname_user` varchar(64) NOT NULL,
   `mail` varchar(125) NOT NULL,
   `phone` int(14) NOT NULL,
@@ -150,7 +151,7 @@ CREATE TABLE `t_user` (
 -- Contenu de la table `t_user`
 --
 
-INSERT INTO `t_user` (`id_user`, `fistname_user`, `lastname_user`, `mail`, `phone`, `address`, `city`, `npa`, `fk_gender`, `fk_stuff`, `date_user`) VALUES
+INSERT INTO `t_user` (`id_user`, `firstname_user`, `lastname_user`, `mail`, `phone`, `address`, `city`, `npa`, `fk_gender`, `fk_stuff`, `date_user`) VALUES
 (1, 'Johan', 'Crocoll', 'johan.crocoll@infomaniak.ch', 761234567, 'rue des praliné', 'Nyon', 1234, 1, 1, '2020-05-16'),
 (2, 'Raphtalia', 'Iwatani', 'rising@shieldhero.jp', 413676875, 'boulevard des lolis', 'lolicity', 69, 2, NULL, '2020-05-16'),
 (3, 'Rocco', 'Ronzano', 'roccoronzano@hotmail.com', 216914091, 'Route de Romainmôtier 8', 'Moiry VD', 1148, 1, NULL, '2020-05-16'),

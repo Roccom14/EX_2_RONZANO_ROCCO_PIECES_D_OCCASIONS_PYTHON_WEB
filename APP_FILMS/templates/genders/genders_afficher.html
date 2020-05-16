@@ -14,11 +14,11 @@
             </thead>
             {% for row in data %}
                 <tr>
-                    <td>{{ row.id_genre }}</td>
-                    <td>{{ row.intitule_genre }}</td>
-                    <td> <a href="{{ url_for('genres_add') }}">Add</a> </td>
-                    <td> <a href="{{ url_for('genres_edit', id_genre_edit_html=row.id_genre) }}">Edit</a> </td>
-                    <td> <a href="{{ url_for('genres_select_delete', id_genre_delete_html=row.id_genre) }}">Delete</a> </td>
+                    <td>{{ row.id_gender }}</td>
+                    <td>{{ row.gender }}</td>
+                    <td> <a href="{{ url_for('genders_add') }}">Add</a> </td>
+                    <td> <a href="{{ url_for('genders_edit', id_gender_edit_html=row.id_gender) }}">Edit</a> </td>
+                    <td> <a href="{{ url_for('genders_select_delete', id_gender_delete_html=row.id_gender) }}">Delete</a> </td>
                 </tr>
             {% endfor %}
         </table>

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} Afficher FILMS {% endblock %}
+{% block title %} Afficher USER {% endblock %}
 {% block body %}
     <div class="home">
         
@@ -13,24 +13,33 @@
             <thead>
                 <tr>
                     <th>id</th>
-                    <th>Titre</th>
-                    <th>Durée</th>
-                    <th>Description</th>
-                    <th>Affiche</th>
-                    <th>Date sortie</th>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Mail</th>
+                    <th>Phone</th>
+                    <th>Adresse</th>
+                    <th>Ville</th>
+                    <th>NPA</th>
+                    <th>Genre</th>
+                    <th>Stuff</th>
+                    <th>Date</th>
                 </tr>
             </thead>
             {% for row in data %}
                 <tr>
-                    <td>{{ row.id_film }}</td>
-                    <td>{{ row.nom_film }}</td>
-                    <td>{{ row.duree_film|default("", True) }}</td>
-                    <td>{{ row.description_film|default("", True) }}</td>
-                    <td><img src={{ row.cover_link_film|default("", True) }} style="width:auto;max-height: 465px;" alt = "Covid-19 grand semi-confinement mod 104"></td>
-                    <td>{{ row.date_sortie_film|default("", True) }}</td>                    
-                    <td> <a href="{{ url_for('avertissement_sympa_pour_geeks') }}">Edit</a> </td>
-                    <td> <a href="{{ url_for('avertissement_sympa_pour_geeks') }}">Delete</a> </td>
-                    <td> <a href="{{ url_for('avertissement_sympa_pour_geeks') }}">Add</a> </td>
+                    <td>{{ row.id_user }}</td>
+                    <td>{{ row.firstname_user }}</td>
+                    <td>{{ row.lastname_user|default("", True) }}</td>
+                    <td>{{ row.mail|default("", True) }}</td>
+                    <td>{{ row.phone|default("", True) }}</td>
+                    <td>{{ row.address|default("", True) }}</td>
+                    <td>{{ row.city|default("", True) }}</td>
+                    <td>{{ row.npa|default("", True) }}</td>
+                    <td>{{ row.gender|default("", True) }}</td>
+                    <td>{{ row.date_user|default("", True) }}</td>
+                    <td> <a href="#">Edit</a> </td>
+                    <td> <a href="#">Delete</a> </td>
+                    <td> <a href="#">Add</a> </td>
                 </tr>
             {% endfor %}
         </table>
