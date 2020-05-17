@@ -2,7 +2,7 @@
 {% block title %} Ajouter un USER{% endblock %}
 {% block body %}
     <div class="home">
-        <BODY bgcolor="brown">
+        <BODY bgcolor="white">
         <form method="POST" action="">
             <div>
                 {% if error %}
@@ -11,7 +11,14 @@
             </div>
             <center>
                 <H1>Clavioter un nouveau USER</H1> <br>
-                Nom genre <input type = "text" name= "user_html" /> <br>
+                Prénom <input type = "text" name= "firstname_user_html" /> <br>
+                Nom <input type = "text" name= "lastname_user_html" /> <br>
+                Mail <input type = "text" name= "mail_html" /> <br>
+                Téléphone <input type = "text" name= "phone_html" /> <br>
+                Adresse <input type = "text" name= "address_html" /> <br>
+                Ville <input type = "text" name= "city_html" /> <br>
+                NPA <input type = "text" name= "npa_html" /> <br>
+                Genres <input type = "select" name= "gender_html" /> <br>
                 <input type = "submit" value="Enregistrer le user">
             </center>
         </form>

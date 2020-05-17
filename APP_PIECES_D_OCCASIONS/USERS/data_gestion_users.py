@@ -1,17 +1,13 @@
 # data_gestion_users.py
 # OM 2698.03.21 Permet de gérer (CRUD) les données de la table t_users
-
-
 from flask import flash
 
-from APP_PIECES_D_OCCASIONS.DATABASE import connect_db_context_manager
-from APP_PIECES_D_OCCASIONS import obj_mon_application
+
 from APP_PIECES_D_OCCASIONS.DATABASE.connect_db_context_manager import MaBaseDeDonnee
 from APP_PIECES_D_OCCASIONS.DATABASE.erreurs import *
 
 
-
-class GestionUsers():
+class GestionUsers:
     def __init__(self):
         try:
             print("dans le try de gestions users")
@@ -23,9 +19,7 @@ class GestionUsers():
             # DEBUG bon marché : Pour afficher un message dans la console.
             print(f"Exception grave Classe constructeur GestionGenres {erreur.args[0]}")
             raise MaBdErreurConnexion(f"{msg_erreurs['ErreurConnexionBD']['message']} {erreur.args[0]}")
-
         print("Classe constructeur GestionUsers ")
-
 
     def users_afficher_data(self):
         try:
@@ -33,7 +27,7 @@ class GestionUsers():
             # la commande MySql classique est "SELECT * FROM t_users"
             # Pour "lever"(raise) une erreur s'il y a des erreurs sur les noms d'attributs dans la table
             # donc, je précise les champs à afficher
-            strsql_users_afficher = """SELECT id_user, firstname_user, lastname_user, mail, phone, address, city, npa, user, date_user FROM t_user INNER JOIN t_user ON t_user.fk_user = t_user.id_user ORDER BY id_user ASC"""
+            strsql_users_afficher = """SELECT id_user, firstname_user, lastname_user, mail, phone, address, city, npa, gender, date_user FROM t_user INNER JOIN t_gender ON t_user.fk_gender = t_gender.id_gender ORDER BY id_user ASC"""
             # Du fait de l'utilisation des "context managers" on accède au curseur grâce au "with".
             with MaBaseDeDonnee().connexion_bd.cursor() as mc_afficher:
                 # Envoi de la commande MySql
@@ -53,14 +47,13 @@ class GestionUsers():
         except pymysql.err.IntegrityError as erreur:
             # OM 2020.04.09 On dérive "pymysql.err.IntegrityError" dans "MaBdErreurDoublon" fichier "erreurs.py"
             # Ainsi on peut avoir un message d'erreur personnalisé.
-            # raise MaBdErreurDoublon(f"{msg_erreurs['ErreurDoublonValue']['message']} et son status {msg_erreurs['ErreurDoublonValue']['status']}")
             raise MaBdErreurConnexion(f"DGF fad pei {msg_erreurs['ErreurConnexionBD']['message']} {erreur.args[1]}")
 
- def add_user_data(self, valeurs_insertion_dictionnaire):
+    def add_user_data(valeurs_insertion_dictionnaire):
         try:
             print(valeurs_insertion_dictionnaire)
             # OM 2020.04.07 C'EST LA QUE VOUS ALLEZ DEVOIR PLACER VOTRE PROPRE LOGIQUE MySql
-            strsql_insert_user = """INSERT INTO t_user (id_user,user) VALUES (NULL,%(value_user)s)"""
+            strsql_insert_user = """INSERT INTO t_user (id_user, firstname_user, lastname_user, mail, phone, address, city, npa, gender, date_user) VALUES (NULL,%(value_firstname_user)s, %(value_lastname_user)s, %(value_mail)s, %(value_phone)s, %(value_address)s, %(value_city)s, %(value_npa)s, %(value_gender)s, %(value_date_user)s) INNER JOIN t_gender ON t_user.fk_gender = t_gender.id_gender"""
             # Du fait de l'utilisation des "context managers" on accède au curseur grâce au "with".
             # la subtilité consiste à avoir une méthode "mabd_execute" dans la classe "MaBaseDeDonnee"
             # ainsi quand elle aura terminé l'insertion des données le destructeur de la classe "MaBaseDeDonnee"
@@ -72,35 +65,34 @@ class GestionUsers():
         except pymysql.err.IntegrityError as erreur:
             # OM 2020.04.09 On dérive "pymysql.err.IntegrityError" dans "MaBdErreurDoublon" fichier "erreurs.py"
             # Ainsi on peut avoir un message d'erreur personnalisé.
-            raise MaBdErreurDoublon(
-                f"DGG pei erreur doublon {msg_erreurs['ErreurDoublonValue']['message']} et son status {msg_erreurs['ErreurDoublonValue']['status']}")
+            raise MaBdErreurDoublon(f"DGG pei erreur doublon {msg_erreurs['ErreurDoublonValue']['message']} et son status {msg_erreurs['ErreurDoublonValue']['status']}")
 
-    def edit_user_data(self, valeur_id_dictionnaire):
-        try:
-            print(valeur_id_dictionnaire)
-            # OM 2020.04.07 C'EST LA QUE VOUS ALLEZ DEVOIR PLACER VOTRE PROPRE LOGIQUE MySql
-            # Commande MySql pour afficher le user sélectionné dans le tableau dans le formulaire HTML
-            str_sql_id_user = "SELECT id_user, user FROM t_user WHERE id_user = %(value_id_user)s"
+        def edit_user_data(self, valeur_id_dictionnaire):
+            try:
+                print(valeur_id_dictionnaire)
+                # OM 2020.04.07 C'EST LA QUE VOUS ALLEZ DEVOIR PLACER VOTRE PROPRE LOGIQUE MySql
+                # Commande MySql pour afficher le user sélectionné dans le tableau dans le formulaire HTML
+                str_sql_id_user = "SELECT id_user, firstname_user, lastname_user, mail, phone, address, city, npa, gender, date_user FROM t_user INNER JOIN t_gender ON t_user.fk_gender = t_gender.id_gender WHERE id_user = %(value_id_user)s"
 
-            # Du fait de l'utilisation des "context managers" on accède au curseur grâce au "with".
-            # la subtilité consiste à avoir une méthode "mabd_execute" dans la classe "MaBaseDeDonnee"
-            # ainsi quand elle aura terminé l'insertion des données le destructeur de la classe "MaBaseDeDonnee"
-            # sera interprété, ainsi on fera automatiquement un commit
-            with MaBaseDeDonnee().connexion_bd as mconn_bd:
-                with mconn_bd as mc_cur:
-                    mc_cur.execute(str_sql_id_user, valeur_id_dictionnaire)
-                    data_one = mc_cur.fetchall()
-                    print("valeur_id_dictionnaire...", data_one)
-                    return data_one
+                # Du fait de l'utilisation des "context managers" on accède au curseur grâce au "with".
+                # la subtilité consiste à avoir une méthode "mabd_execute" dans la classe "MaBaseDeDonnee"
+                # ainsi quand elle aura terminé l'insertion des données le destructeur de la classe "MaBaseDeDonnee"
+                # sera interprété, ainsi on fera automatiquement un commit
+                with MaBaseDeDonnee().connexion_bd as mconn_bd:
+                    with mconn_bd as mc_cur:
+                        mc_cur.execute(str_sql_id_user, valeur_id_dictionnaire)
+                        data_one = mc_cur.fetchall()
+                        print("valeur_id_dictionnaire...", data_one)
+                        return data_one
 
-        except Exception as erreur:
-            # OM 2020.03.01 Message en cas d'échec du bon déroulement des commandes ci-dessus.
-            print(f"Problème edit_user_data Data Gestions Users numéro de l'erreur : {erreur}")
-            # flash(f"Flash. Problèmes Data Gestions Users numéro de l'erreur : {erreur}", "danger")
-            # OM 2020.04.09 On dérive "Exception" par le "@obj_mon_application.errorhandler(404)" fichier "run_mon_app.py"
-            # Ainsi on peut avoir un message d'erreur personnalisé.
-            raise Exception(
-                "Raise exception... Problème edit_user_data d'un user Data Gestions Users {erreur}")
+            except Exception as erreur:
+                # OM 2020.03.01 Message en cas d'échec du bon déroulement des commandes ci-dessus.
+                print(f"Problème edit_user_data Data Gestions Users numéro de l'erreur : {erreur}")
+                # flash(f"Flash. Problèmes Data Gestions Users numéro de l'erreur : {erreur}", "danger")
+                # OM 2020.04.09 On dérive "Exception" par le "@obj_mon_application.errorhandler(404)" fichier "run_mon_app.py"
+                # Ainsi on peut avoir un message d'erreur personnalisé.
+                raise Exception(
+                    "Raise exception... Problème edit_user_data d'un user Data Gestions Users {erreur}")
 
     def update_user_data(self, valeur_update_dictionnaire):
         try:
@@ -108,7 +100,7 @@ class GestionUsers():
             # OM 2019.04.02 Commande MySql pour la MODIFICATION de la valeur "CLAVIOTTEE" dans le champ "nameEditIntituleUserHTML" du form HTML "UsersEdit.html"
             # le "%s" permet d'éviter des injections SQL "simples"
             # <td><input type = "text" name = "nameEditIntituleUserHTML" value="{{ row.intitule_user }}"/></td>
-            str_sql_update_user = "UPDATE t_user SET user = %(value_user)s WHERE id_user = %(value_id_user)s"
+            str_sql_update_user = "UPDATE t_user SET user = %(value_firstname_user)s, %(value_lastname_user)s, %(value_mail)s, %(value_phone)s, %(value_address)s, %(value_city)s, %(value_npa)s, %(value_gender)s, %(value_date_user)s) WHERE id_user = %(value_id_user)s"
 
             # Du fait de l'utilisation des "context managers" on accède au curseur grâce au "with".
             # la subtilité consiste à avoir une méthode "mabd_execute" dans la classe "MaBaseDeDonnee"
@@ -146,7 +138,7 @@ class GestionUsers():
 
             # OM 2020.04.07 C'EST LA QUE VOUS ALLEZ DEVOIR PLACER VOTRE PROPRE LOGIQUE MySql
             # Commande MySql pour afficher le user sélectionné dans le tableau dans le formulaire HTML
-            str_sql_select_id_user = "SELECT id_user, user FROM t_user WHERE id_user = %(value_id_user)s"
+            str_sql_select_id_user = "SELECT id_user, firstname_user, lastname_user, mail, phone, address, city, npa, gender, date_user FROM t_user INNER JOIN t_gender ON t_user.fk_gender = t_gender.id_gender WHERE id_user = %(value_id_user)s"
 
             # Du fait de l'utilisation des "context managers" on accède au curseur grâce au "with".
             # la subtilité consiste à avoir une gméthode "mabd_execute" dans la classe "MaBaseDeDonnee"

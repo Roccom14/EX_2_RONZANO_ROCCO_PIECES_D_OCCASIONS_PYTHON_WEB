@@ -1,11 +1,14 @@
 # routes_gestion_users.py
 # OM 2020.04.06 Gestions des "routes" FLASK pour les users.
+import re
 
 import pymysql
-from flask import render_template, flash, request
+from flask import render_template, flash, request, redirect, url_for
 from APP_PIECES_D_OCCASIONS import obj_mon_application
+from APP_PIECES_D_OCCASIONS.DATABASE.erreurs import msg_erreurs, MaBdErreurDoublon, MonErreur, MaBdErreurConnexion
 from APP_PIECES_D_OCCASIONS.USERS.data_gestion_users import GestionUsers
 from APP_PIECES_D_OCCASIONS.DATABASE.connect_db_context_manager import MaBaseDeDonnee
+
 
 # OM 2020.04.16 Afficher un avertissement sympa...mais contraignant
 # Pour la tester http://127.0.0.1:1234/avertissement_sympa_pour_geeks
@@ -60,13 +63,21 @@ def users_add():
             # OM 2020.04.09 Objet contenant toutes les méthodes pour gérer (CRUD) les données.
             obj_actions_users = GestionUsers()
             # OM 2020.04.09 Récupère le contenu du champ dans le formulaire HTML "users_add.html"
-            user = request.form['user_html']
+            firstname_user = request.form['firstname_user_html']
+            lastname_user = request.form['lastname_user_html']
+            mail = request.form['mail_html']
+            phone = request.form['phone_html']
+            address = request.form['address_html']
+            city = request.form['city_html']
+            npa = request.form['npa_html']
+            gender = request.form['gender_html']
+            date_user = request.form['date_user_html']
 
             # OM 2019.04.04 On ne doit pas accepter des valeurs vides, des valeurs avec des chiffres,
             # des valeurs avec des caractères qui ne sont pas des lettres.
             # Accepte le trait d'union ou l'apostrophe, et l'espace entre deux mots, mais pas plus d'une occurence.
             if not re.match("^([A-Z]|[a-z\u00C0-\u00FF])[A-Za-z\u00C0-\u00FF]*['\\- ]?[A-Za-z\u00C0-\u00FF]+$",
-                                user):
+                            firstname_user):
                 # OM 2019.03.28 Message humiliant à l'attention de l'utilisateur.
                 flash(f"Une entrée...incorrecte !! Pas de chiffres, de caractères spéciaux, d'espace à double, "
                       f"de double apostrophe, de double trait union et ne doit pas être vide.", "Danger")
@@ -75,21 +86,31 @@ def users_add():
             else:
 
                 # Constitution d'un dictionnaire et insertion dans la BD
-                valeurs_insertion_dictionnaire = {"value_user": user}
+                valeurs_insertion_dictionnaire = {"value_firstname_user": firstname_user,
+                                                  "value_lastname_user": lastname_user,
+                                                  "value_mail": mail,
+                                                  "value_phone": phone,
+                                                  "value_address": address,
+                                                  "value_city": city,
+                                                  "value_npa": npa,
+                                                  "value_gender": gender,
+                                                  "value_date_user": date_user}
+
                 obj_actions_users.add_user_data(valeurs_insertion_dictionnaire)
 
                 # OM 2019.03.25 Les 2 lignes ci-après permettent de donner un sentiment rassurant aux utilisateurs.
                 flash(f"Données insérées !!", "Sucess")
                 print(f"Données insérées !!")
                 # On va interpréter la "route" 'users_afficher', car l'utilisateur
-                # doit voir le nouveau user qu'il vient d'insérer.
+                # doit voir le nouveau firstname_user qu'il vient d'insérer.
                 return redirect(url_for('users_afficher'))
 
         # OM 2020.04.16 ATTENTION à l'ordre des excepts très important de respecter l'ordre.
         except pymysql.err.IntegrityError as erreur:
             # OM 2020.04.09 On dérive "pymysql.err.IntegrityError" dans "MaBdErreurDoublon" fichier "erreurs.py"
             # Ainsi on peut avoir un message d'erreur personnalisé.
-            raise MaBdErreurDoublon(f"RGG pei {msg_erreurs['ErreurDoublonValue']['message']} et son status {msg_erreurs['ErreurDoublonValue']['status']}")
+            raise MaBdErreurDoublon(
+                f"RGG pei {msg_erreurs['ErreurDoublonValue']['message']} et son status {msg_erreurs['ErreurDoublonValue']['status']}")
 
         # OM 2020.04.16 ATTENTION à l'ordre des excepts très important de respecter l'ordre.
         except (pymysql.err.OperationalError,
@@ -103,7 +124,8 @@ def users_add():
         except Exception as erreur:
             # OM 2020.04.09 On dérive "Exception" dans "MaBdErreurConnexion" fichier "erreurs.py"
             # Ainsi on peut avoir un message d'erreur personnalisé.
-            raise MaBdErreurConnexion(f"RGG Exception {msg_erreurs['ErreurConnexionBD']['message']} et son status {msg_erreurs['ErreurConnexionBD']['status']}")
+            raise MaBdErreurConnexion(
+                f"RGG Exception {msg_erreurs['ErreurConnexionBD']['message']} et son status {msg_erreurs['ErreurConnexionBD']['status']}")
     # OM 2020.04.07 Envoie la page "HTML" au serveur.
     return render_template("users/users_add.html")
 
@@ -111,7 +133,7 @@ def users_add():
 # ---------------------------------------------------------------------------------------------------
 # OM 2020.04.07 Définition d'une "route" /users_edit , cela va permettre de programmer quelles actions sont réalisées avant de l'envoyer
 # au navigateur par la méthode "render_template".
-# On change la valeur d'un user de users par la commande MySql "UPDATE"
+# On change la valeur d'un firstname_user de users par la commande MySql "UPDATE"
 # ---------------------------------------------------------------------------------------------------
 @obj_mon_application.route('/users_edit', methods=['POST', 'GET'])
 def users_edit():
@@ -139,7 +161,7 @@ def users_edit():
             data_id_user = obj_actions_users.edit_user_data(valeur_select_dictionnaire)
             print("dataIdUser ", data_id_user, "type ", type(data_id_user))
             # Message ci-après permettent de donner un sentiment rassurant aux utilisateurs.
-            flash(f"Editer le user d'un film !!!")
+            flash(f"Editer le firstname_user d'un film !!!")
 
         except (Exception,
                 pymysql.err.OperationalError,
@@ -161,7 +183,7 @@ def users_edit():
 # ---------------------------------------------------------------------------------------------------
 # OM 2020.04.07 Définition d'une "route" /users_update , cela va permettre de programmer quelles actions sont réalisées avant de l'envoyer
 # au navigateur par la méthode "render_template".
-# On change la valeur d'un user de users par la commande MySql "UPDATE"
+# On change la valeur d'un firstname_user de users par la commande MySql "UPDATE"
 # ---------------------------------------------------------------------------------------------------
 @obj_mon_application.route('/users_update', methods=['POST', 'GET'])
 def users_update():
@@ -169,12 +191,12 @@ def users_update():
     print(dir(request))
     # OM 2020.04.07 Les données sont affichées dans un formulaire, l'affichage de la sélection
     # d'une seule ligne choisie par le bouton "edit" dans le formulaire "users_afficher.html"
-    # Une fois que l'utilisateur à modifié la valeur du user alors il va appuyer sur le bouton "UPDATE"
+    # Une fois que l'utilisateur à modifié la valeur du firstname_user alors il va appuyer sur le bouton "UPDATE"
     # donc en "POST"
     if request.method == 'POST':
         try:
             # DEBUG bon marché : Pour afficher les valeurs contenues dans le formulaire
-            print("request.values ",request.values)
+            print("request.values ", request.values)
 
             # Récupérer la valeur de "id_user" du formulaire html "users_edit.html"
             # l'utilisateur clique sur le lien "edit" et on récupére la valeur de "id_user"
@@ -182,16 +204,25 @@ def users_update():
             # <a href="{{ url_for('users_edit', id_user_edit_html=row.id_user) }}">Edit</a>
             id_user_edit = request.values['id_user_edit_html']
 
-            # Récupère le contenu du champ "user" dans le formulaire HTML "UsersEdit.html"
-            user = request.values['name_edit_user_html']
-            valeur_edit_list = [{'id_user': id_user_edit, 'user': user}]
+            # Récupère le contenu du champ "firstname_user" dans le formulaire HTML "UsersEdit.html"
+            firstname_user = request.values['edit_firstname_user_html']
+            lastname_user = request.form['edit_lastname_user_html']
+            mail = request.form['edit_mail_html']
+            phone = request.form['edit_phone_html']
+            address = request.form['edit_address_html']
+            city = request.form['edit_city_html']
+            npa = request.form['edit_npa_html']
+            gender = request.form['edit_gender_html']
+            date_user = request.form['edit_date_user_html']
+            valeur_edit_list = [{'id_user': id_user_edit, 'firstname_user': firstname_user, 'lastname_user': lastname_user, 'mail': mail, 'phone': phone, 'address': address, 'city': city, 'npa': npa, 'gender': gender, 'date_user': date_user}]
             # On ne doit pas accepter des valeurs vides, des valeurs avec des chiffres,
             # des valeurs avec des caractères qui ne sont pas des lettres.
             # Accepte le trait d'union ou l'apostrophe, et l'espace entre deux mots, mais pas plus d'une occurence.
-            if not re.match("^([A-Z]|[a-z\u00C0-\u00FF])[A-Za-z\u00C0-\u00FF]*['\\- ]?[A-Za-z\u00C0-\u00FF]+$", user):
+            if not re.match("^([A-Z]|[a-z\u00C0-\u00FF])[A-Za-z\u00C0-\u00FF]*['\\- ]?[A-Za-z\u00C0-\u00FF]+$",
+                            firstname_user):
                 # En cas d'erreur, conserve la saisie fausse, afin que l'utilisateur constate sa misérable faute
-                # Récupère le contenu du champ "user" dans le formulaire HTML "UsersEdit.html"
-                #user = request.values['name_edit_user_html']
+                # Récupère le contenu du champ "firstname_user" dans le formulaire HTML "UsersEdit.html"
+                # firstname_user = request.values['name_edit_user_html']
                 # Message humiliant à l'attention de l'utilisateur.
                 flash(f"Une entrée...incorrecte !! Pas de chiffres, de caractères spéciaux, d'espace à double, "
                       f"de double apostrophe, de double trait union et ne doit pas être vide.", "Danger")
@@ -199,16 +230,25 @@ def users_update():
                 # On doit afficher à nouveau le formulaire "users_edit.html" à cause des erreurs de "claviotage"
                 # Constitution d'une liste pour que le formulaire d'édition "users_edit.html" affiche à nouveau
                 # la possibilité de modifier l'entrée
-                # Exemple d'une liste : [{'id_user': 13, 'user': 'philosophique'}]
-                valeur_edit_list = [{'id_user': id_user_edit, 'user': user}]
+                # Exemple d'une liste : [{'id_user': 13, 'firstname_user': 'philosophique'}]
+                valeur_edit_list = [{'id_user': id_user_edit, 'firstname_user': firstname_user, 'lastname_user': lastname_user, 'mail': mail, 'phone': phone, 'address': address, 'city': city, 'npa': npa, 'gender': gender, 'date_user': date_user}]
 
                 # DEBUG bon marché :
                 # Pour afficher le contenu et le type de valeurs passées au formulaire "users_edit.html"
-                print(valeur_edit_list, "type ..",  type(valeur_edit_list))
+                print(valeur_edit_list, "type ..", type(valeur_edit_list))
                 return render_template('users/users_edit.html', data=valeur_edit_list)
             else:
                 # Constitution d'un dictionnaire et insertion dans la BD
-                valeur_update_dictionnaire = {"value_id_user": id_user_edit, "value_user": user}
+                valeur_update_dictionnaire = {"value_id_user": id_user_edit,
+                                              "value_firstname_user": firstname_user,
+                                              "value_lastname_user": lastname_user,
+                                              "value_mail": mail,
+                                              "value_phone": phone,
+                                              "value_address": address,
+                                              "value_city": city,
+                                              "value_npa": npa,
+                                              "value_gender": gender,
+                                              "value_date_user": date_user}
 
                 # OM 2020.04.09 Objet contenant toutes les méthodes pour gérer (CRUD) les données.
                 obj_actions_users = GestionUsers()
@@ -218,7 +258,7 @@ def users_update():
                 # DEBUG bon marché :
                 print("dataIdUser ", data_id_user, "type ", type(data_id_user))
                 # Message ci-après permettent de donner un sentiment rassurant aux utilisateurs.
-                flash(f"Editer le user d'un film !!!")
+                flash(f"Editer le firstname_user d'un film !!!")
                 # On affiche les users
                 return redirect(url_for('users_afficher'))
 
@@ -241,11 +281,10 @@ def users_update():
 # ---------------------------------------------------------------------------------------------------
 # OM 2020.04.07 Définition d'une "route" /users_select_delete , cela va permettre de programmer quelles actions sont réalisées avant de l'envoyer
 # au navigateur par la méthode "render_template".
-# On change la valeur d'un user de users par la commande MySql "UPDATE"
+# On change la valeur d'un firstname_user de users par la commande MySql "UPDATE"
 # ---------------------------------------------------------------------------------------------------
 @obj_mon_application.route('/users_select_delete', methods=['POST', 'GET'])
 def users_select_delete():
-
     if request.method == 'GET':
         try:
 
@@ -256,7 +295,6 @@ def users_select_delete():
 
             # Constitution d'un dictionnaire et insertion dans la BD
             valeur_delete_dictionnaire = {"value_id_user": id_user_delete}
-
 
             # OM 2019.04.02 La commande MySql est envoyée à la BD
             data_id_user = obj_actions_users.delete_select_user_data(valeur_delete_dictionnaire)
@@ -275,17 +313,16 @@ def users_select_delete():
             flash(f"Erreur users_delete {erreur.args[0], erreur.args[1]}")
 
     # Envoie la page "HTML" au serveur.
-    return render_template('users/users_delete.html', data = data_id_user)
+    return render_template('users/users_delete.html', data=data_id_user)
 
 
 # ---------------------------------------------------------------------------------------------------
 # OM 2019.04.02 Définition d'une "route" /usersUpdate , cela va permettre de programmer quelles actions sont réalisées avant de l'envoyer
 # au navigateur par la méthode "render_template".
-# Permettre à l'utilisateur de modifier un user, et de filtrer son entrée grâce à des expressions régulières REGEXP
+# Permettre à l'utilisateur de modifier un firstname_user, et de filtrer son entrée grâce à des expressions régulières REGEXP
 # ---------------------------------------------------------------------------------------------------
 @obj_mon_application.route('/users_delete', methods=['POST', 'GET'])
 def users_delete():
-
     # OM 2019.04.02 Pour savoir si les données d'un formulaire sont un affichage ou un envoi de donnée par des champs utilisateurs.
     if request.method == 'POST':
         try:
@@ -308,12 +345,13 @@ def users_delete():
         except (pymysql.err.OperationalError, pymysql.ProgrammingError, pymysql.InternalError, pymysql.IntegrityError,
                 TypeError) as erreur:
             # OM 2020.04.09 Traiter spécifiquement l'erreur MySql 1451
-            # Cette erreur 1451, signifie qu'on veut effacer un "user" de users qui est associé dans "t_users_films".
+            # Cette erreur 1451, signifie qu'on veut effacer un "firstname_user" de users qui est associé dans "t_users_films".
             if erreur.args[0] == 1451:
                 # C'est une erreur à signaler à l'utilisateur de cette application WEB.
                 flash('IMPOSSIBLE d\'effacer !!! Cette valeur est associée à des users !')
                 # DEBUG bon marché : Pour afficher un message dans la console.
-                print(f"IMPOSSIBLE d'effacer !! Ce user est associé à des users dans la t_users_films !!! : {erreur}")
+                print(
+                    f"IMPOSSIBLE d'effacer !! Ce firstname_user est associé à des users dans la t_users_films !!! : {erreur}")
                 # Afficher la liste des users des users
                 return redirect(url_for('users_afficher'))
             else:
@@ -322,7 +360,6 @@ def users_delete():
                 print(f"Erreur users_delete {erreur.args[0], erreur.args[1]}")
                 # C'est une erreur à signaler à l'utilisateur de cette application WEB.
                 flash(f"Erreur users_delete {erreur.args[0], erreur.args[1]}")
-
 
             # OM 2019.04.02 Envoie la page "HTML" au serveur.
     return render_template('users/users_afficher.html', data=data_users)

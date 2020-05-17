@@ -26,7 +26,7 @@
                     </thead>
                     {% for row in data %}
                         <tr>
-                            <td><input type="hidden" name="id_users_delete_html" value="{{ row.id_user }}"></td>
+                            <td><input type="hidden" name="id_user_delete_html" value="{{ row.id_user }}"></td>
                             <td>{{ row.firstname_user }}</td>
                             <td>{{ row.lastname_user|default("", True) }}</td>
                             <td>{{ row.mail|default("", True) }}</td>
