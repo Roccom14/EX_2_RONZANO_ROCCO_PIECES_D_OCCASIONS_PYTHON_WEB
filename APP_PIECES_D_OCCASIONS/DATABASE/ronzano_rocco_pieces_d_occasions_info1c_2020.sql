@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  localhost
--- Généré le :  Sam 16 Mai 2020 à 20:38
+-- Généré le :  Sam 16 Mai 2020 à 23:40
 -- Version du serveur :  5.7.11
 -- Version de PHP :  5.6.18
 
@@ -55,7 +55,9 @@ INSERT INTO `t_gender` (`id_gender`, `gender`) VALUES
 (5, 'Hardcore'),
 (6, 'Divinité'),
 (7, 'Je ne vous aime pas tous'),
-(8, 'Je vous aime tous');
+(8, 'Je vous aime tous'),
+(10, 'anime'),
+(11, 'Maccaud');
 
 -- --------------------------------------------------------
 
@@ -93,7 +95,7 @@ CREATE TABLE `t_stuff` (
   `quantity_stuff` int(5) NOT NULL,
   `fk_state_stuff` int(11) NOT NULL,
   `fk_type_payment` int(11) NOT NULL,
-  `date_add_stuff` date NOT NULL,
+  `date_add_stuff` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `date_bought_stuff` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -102,7 +104,7 @@ CREATE TABLE `t_stuff` (
 --
 
 INSERT INTO `t_stuff` (`id_stuff`, `name_stuff`, `description_stuff`, `price_stuff`, `type_stuff`, `quantity_stuff`, `fk_state_stuff`, `fk_type_payment`, `date_add_stuff`, `date_bought_stuff`) VALUES
-(1, 'Phare de Bentley', 'Phare de bentley, en très bon état', 99, 'Phare', 1, 2, 1, '2020-05-16', NULL);
+(1, 'Phare de Bentley', 'Phare de bentley, en très bon état', 99, 'Phare', 1, 2, 1, '2020-05-15 22:00:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -144,7 +146,7 @@ CREATE TABLE `t_user` (
   `npa` int(6) NOT NULL,
   `fk_gender` int(11) NOT NULL,
   `fk_stuff` int(11) DEFAULT NULL,
-  `date_user` date NOT NULL
+  `date_user` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -152,10 +154,12 @@ CREATE TABLE `t_user` (
 --
 
 INSERT INTO `t_user` (`id_user`, `firstname_user`, `lastname_user`, `mail`, `phone`, `address`, `city`, `npa`, `fk_gender`, `fk_stuff`, `date_user`) VALUES
-(1, 'Johan', 'Crocoll', 'johan.crocoll@infomaniak.ch', 761234567, 'rue des praliné', 'Nyon', 1234, 1, 1, '2020-05-16'),
-(2, 'Raphtalia', 'Iwatani', 'rising@shieldhero.jp', 413676875, 'boulevard des lolis', 'lolicity', 69, 2, NULL, '2020-05-16'),
-(3, 'Rocco', 'Ronzano', 'roccoronzano@hotmail.com', 216914091, 'Route de Romainmôtier 8', 'Moiry VD', 1148, 1, NULL, '2020-05-16'),
-(4, 'Olivier', 'Maccaud', 'bdepsic@yahoo.fr', 764206942, 'om de la 707', 'Bex', 1880, 6, NULL, '2020-05-16');
+(1, 'Johan', 'Crocoll', 'johan.crocoll@infomaniak.ch', 761234567, 'rue des praliné', 'Nyon', 1234, 1, 1, '2020-05-15 22:00:00'),
+(2, 'Raphtalia', 'Iwatani', 'rising@shieldhero.jp', 413676875, 'boulevard des lolis', 'lolicity', 69, 2, NULL, '2020-05-15 22:00:00'),
+(3, 'Rocco', 'Ronzano', 'roccoronzano@hotmail.com', 216914091, 'Route de Romainmôtier 8', 'Moiry VD', 1148, 1, NULL, '2020-05-15 22:00:00'),
+(4, 'Olivier', 'Maccaud', 'bdepsic@yahoo.fr', 764206942, 'om de la 707', 'Bex', 1880, 6, NULL, '2020-05-15 22:00:00'),
+(5, 'sdrsdfg', 'dfsdfds', 'sdfsdfsdfsdf', 454544654, 'sdfsdfsdfsdf', 'dsf<gfdg', 666, 4, NULL, '2020-05-15 22:00:00'),
+(6, 'test', 'test', 'test@test.ch', 761234567, 'test test 69', 'testcity', 1234, 1, NULL, '2020-05-16 23:36:03');
 
 --
 -- Index pour les tables exportées
@@ -203,7 +207,7 @@ ALTER TABLE `t_user`
 -- AUTO_INCREMENT pour la table `t_gender`
 --
 ALTER TABLE `t_gender`
-  MODIFY `id_gender` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_gender` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- AUTO_INCREMENT pour la table `t_state_stuff`
 --
@@ -223,7 +227,7 @@ ALTER TABLE `t_type_payment`
 -- AUTO_INCREMENT pour la table `t_user`
 --
 ALTER TABLE `t_user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- Contraintes pour les tables exportées
 --
