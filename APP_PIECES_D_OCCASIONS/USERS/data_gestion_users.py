@@ -49,17 +49,19 @@ class GestionUsers:
             # Ainsi on peut avoir un message d'erreur personnalisé.
             raise MaBdErreurConnexion(f"DGF fad pei {msg_erreurs['ErreurConnexionBD']['message']} {erreur.args[1]}")
 
-    def add_user_data(valeurs_insertion_dictionnaire):
+    def add_user_data(self, valeurs_insertion_dictionnaire):
         try:
             print(valeurs_insertion_dictionnaire)
             # OM 2020.04.07 C'EST LA QUE VOUS ALLEZ DEVOIR PLACER VOTRE PROPRE LOGIQUE MySql
-            strsql_insert_user = """INSERT INTO t_user (id_user, firstname_user, lastname_user, mail, phone, address, city, npa, gender, date_user) VALUES (NULL,%(value_firstname_user)s, %(value_lastname_user)s, %(value_mail)s, %(value_phone)s, %(value_address)s, %(value_city)s, %(value_npa)s, %(value_gender)s, %(value_date_user)s) INNER JOIN t_gender ON t_user.fk_gender = t_gender.id_gender"""
+            # strsql_insert_user = """INSERT INTO t_user (id_user, firstname_user, lastname_user, mail, phone, address, city, npa, gender, date_user) VALUES (NULL,%(value_firstname_user)s, %(value_lastname_user)s, %(value_mail)s, %(value_phone)s, %(value_address)s, %(value_city)s, %(value_npa)s, %(value_gender)s, %(value_date_user)s) INNER JOIN t_gender ON t_user.fk_gender = t_gender.id_gender"""
+            strsql_insert_user = """INSERT INTO t_user (id_user, firstname_user, lastname_user, mail, phone, address, city, npa, fk_gender, fk_stuff, date_user) VALUES (NULL, 'chou', 'looky', 'sdfsdfsdf', '0216914091', 'sdfsdfsdfsdf', 'dsfsdfsdfsdf', '666', '2', NULL, '2020-05-16');"""
             # Du fait de l'utilisation des "context managers" on accède au curseur grâce au "with".
             # la subtilité consiste à avoir une méthode "mabd_execute" dans la classe "MaBaseDeDonnee"
             # ainsi quand elle aura terminé l'insertion des données le destructeur de la classe "MaBaseDeDonnee"
             # sera interprété, ainsi on fera automatiquement un commit
             with MaBaseDeDonnee() as mconn_bd:
-                mconn_bd.mabd_execute(strsql_insert_user, valeurs_insertion_dictionnaire)
+                # mconn_bd.mabd_execute(strsql_insert_user, valeurs_insertion_dictionnaire)
+                mconn_bd.mabd_execute(strsql_insert_user)
 
 
         except pymysql.err.IntegrityError as erreur:

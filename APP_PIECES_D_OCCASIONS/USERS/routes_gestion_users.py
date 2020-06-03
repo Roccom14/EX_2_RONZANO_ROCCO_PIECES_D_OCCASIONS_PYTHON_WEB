@@ -106,19 +106,19 @@ def users_add():
                 return redirect(url_for('users_afficher'))
 
         # OM 2020.04.16 ATTENTION à l'ordre des excepts très important de respecter l'ordre.
-        except pymysql.err.IntegrityError as erreur:
+        # except pymysql.err.IntegrityError as erreur:
             # OM 2020.04.09 On dérive "pymysql.err.IntegrityError" dans "MaBdErreurDoublon" fichier "erreurs.py"
             # Ainsi on peut avoir un message d'erreur personnalisé.
-            raise MaBdErreurDoublon(
-                f"RGG pei {msg_erreurs['ErreurDoublonValue']['message']} et son status {msg_erreurs['ErreurDoublonValue']['status']}")
+            #raise MaBdErreurDoublon(
+                # f"RGG pei {msg_erreurs['ErreurDoublonValue']['message']} et son status {msg_erreurs['ErreurDoublonValue']['status']}")
 
         # OM 2020.04.16 ATTENTION à l'ordre des excepts très important de respecter l'ordre.
-        except (pymysql.err.OperationalError,
-                pymysql.ProgrammingError,
-                pymysql.InternalError,
-                TypeError) as erreur:
-            flash(f"Autre erreur {erreur}")
-            raise MonErreur(f"Autre erreur")
+        #except (pymysql.err.OperationalError,
+            #     pymysql.ProgrammingError,
+            #     pymysql.InternalError,
+            #     TypeError) as erreur:
+            # flash(f"Autre erreur {erreur}")
+            #raise MonErreur(f"Autre erreur")
 
         # OM 2020.04.16 ATTENTION à l'ordre des excepts très important de respecter l'ordre.
         except Exception as erreur:
