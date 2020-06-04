@@ -34,8 +34,14 @@
                             <td><input type = "text" name = "edit_address_html" value="{{ row.address|default("", True) }}"></td>
                             <td><input type = "text" name = "edit_city_html" value="{{ row.city|default("", True) }}"></td>
                             <td><input type = "text" name = "edit_npa_html" value="{{ row.npa|default("", True) }}"></td>
-                            <td><input type = "text" name = "edit_gender_html" value="{{ row.gender|default("", True) }}"></td>
-                            <td><input type = "text" name = "edit_date_user_html" value="{{ row.date_user|default("", True) }}"></td>
+                            <td>
+                                <select name="edit_gender_select">
+                                {% for row in data_genders %}
+                                    <option value="{{ row.id_gender }}">{{ row.gender }}</option>
+                                {% endfor %}
+                                </select>
+                            </td>
+                            <td><input type = "date" name = "edit_date_user_html" value="{{ row.date_user|default("", True) }}"></td>
                             <td><button class="btn btn-warning" type="submit">Update</button></td>
                         </tr>
                     {% endfor %}

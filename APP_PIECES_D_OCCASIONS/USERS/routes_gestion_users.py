@@ -6,6 +6,7 @@ import pymysql
 from flask import render_template, flash, request, redirect, url_for
 from APP_PIECES_D_OCCASIONS import obj_mon_application
 from APP_PIECES_D_OCCASIONS.DATABASE.erreurs import msg_erreurs, MaBdErreurDoublon, MonErreur, MaBdErreurConnexion
+from APP_PIECES_D_OCCASIONS.GENDERS.data_gestion_genders import GestionGenders
 from APP_PIECES_D_OCCASIONS.USERS.data_gestion_users import GestionUsers
 from APP_PIECES_D_OCCASIONS.DATABASE.connect_db_context_manager import MaBaseDeDonnee
 
@@ -58,6 +59,8 @@ def users_afficher():
 def users_add():
     # OM 2019.03.25 Pour savoir si les données d'un formulaire sont un affichage
     # ou un envoi de donnée par des champs utilisateurs.
+    obj_actions_genders = GestionGenders()
+    data_genders = obj_actions_genders.gender_afficher_data()
     if request.method == "POST":
         try:
             # OM 2020.04.09 Objet contenant toutes les méthodes pour gérer (CRUD) les données.
@@ -70,7 +73,7 @@ def users_add():
             address = request.form['address_html']
             city = request.form['city_html']
             npa = request.form['npa_html']
-            gender = request.form['gender_html']
+            gender = request.form['gender_select']
             date_user = request.form['date_user_html']
 
             # OM 2019.04.04 On ne doit pas accepter des valeurs vides, des valeurs avec des chiffres,
@@ -127,7 +130,7 @@ def users_add():
             raise MaBdErreurConnexion(
                 f"RGG Exception {msg_erreurs['ErreurConnexionBD']['message']} et son status {msg_erreurs['ErreurConnexionBD']['status']}")
     # OM 2020.04.07 Envoie la page "HTML" au serveur.
-    return render_template("users/users_add.html")
+    return render_template("users/users_add.html", data_genders=data_genders)
 
 
 # ---------------------------------------------------------------------------------------------------
@@ -139,6 +142,8 @@ def users_add():
 def users_edit():
     # OM 2020.04.07 Les données sont affichées dans un formulaire, l'affichage de la sélection
     # d'une seule ligne choisie par le bouton "edit" dans le formulaire "users_afficher.html"
+    obj_actions_genders = GestionGenders()
+    data_genders = obj_actions_genders.gender_afficher_data()
     if request.method == 'GET':
         try:
             # Récupérer la valeur de "id_user" du formulaire html "users_afficher.html"
@@ -177,7 +182,9 @@ def users_edit():
             raise MaBdErreurConnexion(f"RGG Exception {msg_erreurs['ErreurConnexionBD']['message']}"
                                       f"et son status {msg_erreurs['ErreurConnexionBD']['status']}")
 
-    return render_template("users/users_edit.html", data=data_id_user)
+    return render_template("users/users_edit.html",
+                           data_genders=data_genders,
+                           data=data_id_user)
 
 
 # ---------------------------------------------------------------------------------------------------
@@ -193,6 +200,9 @@ def users_update():
     # d'une seule ligne choisie par le bouton "edit" dans le formulaire "users_afficher.html"
     # Une fois que l'utilisateur à modifié la valeur du firstname_user alors il va appuyer sur le bouton "UPDATE"
     # donc en "POST"
+    obj_actions_genders = GestionGenders()
+    data_genders = obj_actions_genders.gender_afficher_data()
+
     if request.method == 'POST':
         try:
             # DEBUG bon marché : Pour afficher les valeurs contenues dans le formulaire
@@ -212,9 +222,12 @@ def users_update():
             address = request.form['edit_address_html']
             city = request.form['edit_city_html']
             npa = request.form['edit_npa_html']
-            gender = request.form['edit_gender_html']
+            gender = request.form['edit_gender_select']
             date_user = request.form['edit_date_user_html']
-            valeur_edit_list = [{'id_user': id_user_edit, 'firstname_user': firstname_user, 'lastname_user': lastname_user, 'mail': mail, 'phone': phone, 'address': address, 'city': city, 'npa': npa, 'gender': gender, 'date_user': date_user}]
+            valeur_edit_list = [{'id_user': id_user_edit, 'firstname_user': firstname_user,
+                                 'lastname_user': lastname_user, 'mail': mail, 'phone': phone,
+                                 'address': address, 'city': city, 'npa': npa, 'fk_gender': gender,
+                                 'date_user': date_user}]
             # On ne doit pas accepter des valeurs vides, des valeurs avec des chiffres,
             # des valeurs avec des caractères qui ne sont pas des lettres.
             # Accepte le trait d'union ou l'apostrophe, et l'espace entre deux mots, mais pas plus d'une occurence.
@@ -231,8 +244,10 @@ def users_update():
                 # Constitution d'une liste pour que le formulaire d'édition "users_edit.html" affiche à nouveau
                 # la possibilité de modifier l'entrée
                 # Exemple d'une liste : [{'id_user': 13, 'firstname_user': 'philosophique'}]
-                valeur_edit_list = [{'id_user': id_user_edit, 'firstname_user': firstname_user, 'lastname_user': lastname_user, 'mail': mail, 'phone': phone, 'address': address, 'city': city, 'npa': npa, 'gender': gender, 'date_user': date_user}]
-
+                valeur_edit_list = [{'id_user': id_user_edit, 'firstname_user': firstname_user,
+                                     'lastname_user': lastname_user, 'mail': mail, 'phone': phone,
+                                     'address': address, 'city': city, 'npa': npa, 'fk_gender': gender,
+                                     'date_user': date_user}]
                 # DEBUG bon marché :
                 # Pour afficher le contenu et le type de valeurs passées au formulaire "users_edit.html"
                 print(valeur_edit_list, "type ..", type(valeur_edit_list))
@@ -275,7 +290,7 @@ def users_update():
             # des régles "REGEX" dans le champ "name_edit_user_html" alors on renvoie le formulaire "EDIT"
             return render_template('users/users_edit.html', data=valeur_edit_list)
 
-    return render_template("users/users_update.html")
+    return render_template("users/users_update.html", data_genders=data_genders)
 
 
 # ---------------------------------------------------------------------------------------------------
