@@ -1,7 +1,6 @@
 # routes_gestion_users.py
 # OM 2020.04.06 Gestions des "routes" FLASK pour les users.
 import re
-
 import pymysql
 from flask import render_template, flash, request, redirect, url_for
 from APP_PIECES_D_OCCASIONS import obj_mon_application

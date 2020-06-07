@@ -1,8 +1,7 @@
 # data_gestion_users.py
 # OM 2698.03.21 Permet de gérer (CRUD) les données de la table t_users
+
 from flask import flash
-
-
 from APP_PIECES_D_OCCASIONS.DATABASE.connect_db_context_manager import MaBaseDeDonnee
 from APP_PIECES_D_OCCASIONS.DATABASE.erreurs import *
 

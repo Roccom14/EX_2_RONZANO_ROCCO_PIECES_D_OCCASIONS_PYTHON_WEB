@@ -1,7 +1,7 @@
 # data_gestion_genders.py
 # OM 2020.04.09 Permet de gérer (CRUD) les données de la table t_genders
-from flask import flash
 
+from flask import flash
 from APP_PIECES_D_OCCASIONS.DATABASE.connect_db_context_manager import MaBaseDeDonnee
 from APP_PIECES_D_OCCASIONS.DATABASE.erreurs import *
 
